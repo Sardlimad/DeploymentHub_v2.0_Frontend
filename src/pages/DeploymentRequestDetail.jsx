@@ -84,7 +84,7 @@ import { getInstallations } from "../services/installations";
 import { apiErrorMessage } from "../services/api";
 import { useRealtimeRefresh } from "../hooks/useDeploymentsRealtime";
 import { isPrimaryTargetAction, TargetStatus, targetActionLabel, targetButtonLabel } from "../helpers/deploymentStatus";
-import { formatDateTime, timeAgo } from "../helpers/format";
+import { dateWithPerson, formatDateTime, timeAgo } from "../helpers/format";
 
 const ACTION_ICONS = {
   InProgress: <FiPlay />,
@@ -191,7 +191,7 @@ function TargetDetails({ target, artifacts }) {
                   </Text>
                 )}
                 <Text fontSize="xs" color="text.muted">
-                  {formatDateTime(h.changedAt)}
+                  {dateWithPerson(h.changedAt, h.changedByName)}
                 </Text>
               </Box>
             ))}
@@ -388,7 +388,16 @@ function DetailInner() {
               />
             </Box>
             <SummaryItem label="Producto">{request.productName ?? "—"}</SummaryItem>
-            <SummaryItem label="Enviada">{request.submittedAt ? timeAgo(request.submittedAt) : "No enviada"}</SummaryItem>
+            <SummaryItem label="Solicitada por">
+              <Text noOfLines={1}>{request.createdByName ?? "—"}</Text>
+              <Text fontSize="xs" color="text.muted" fontWeight={400} noOfLines={1}>
+                {request.submittedAt
+                  ? `Enviada ${timeAgo(request.submittedAt)}${
+                      request.submittedByName && request.submittedById !== request.createdById ? ` por ${request.submittedByName}` : ""
+                    }`
+                  : "Aún no enviada"}
+              </Text>
+            </SummaryItem>
             <SummaryItem label="Tickets">
               {request.tickets.length ? (
                 <Wrap spacing={1}>
@@ -676,9 +685,9 @@ function DetailInner() {
                   <SummaryItem label="Comentario">
                     <Text fontWeight={400}>{request.comment || "—"}</Text>
                   </SummaryItem>
-                  <SummaryItem label="Creada">{formatDateTime(request.createdAt)}</SummaryItem>
-                  <SummaryItem label="Enviada">{formatDateTime(request.submittedAt)}</SummaryItem>
-                  <SummaryItem label="Aprobada">{formatDateTime(request.approvedAt)}</SummaryItem>
+                  <SummaryItem label="Creada">{dateWithPerson(request.createdAt, request.createdByName)}</SummaryItem>
+                  <SummaryItem label="Enviada">{dateWithPerson(request.submittedAt, request.submittedByName)}</SummaryItem>
+                  <SummaryItem label="Aprobada">{dateWithPerson(request.approvedAt, request.approvedByName)}</SummaryItem>
                   <SummaryItem label="Terminada">{formatDateTime(request.completedAt)}</SummaryItem>
                   <SummaryItem label="Cancelada">
                     {request.cancelledAt ? `${formatDateTime(request.cancelledAt)}${request.cancellationReason ? ` · ${request.cancellationReason}` : ""}` : "—"}

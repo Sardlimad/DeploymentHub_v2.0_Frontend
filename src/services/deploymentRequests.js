@@ -3,7 +3,7 @@ import API from "./api";
 // Contrato v2: api/DeploymentRequests (ver DeploymentHub.Api/Controllers/DeploymentRequestsController.cs).
 
 /**
- * @param {{statuses?: string[], productId?: string, clientId?: string, search?: string, page?: number, pageSize?: number}} filter
+ * @param {{statuses?: string[], productId?: string, clientId?: string, search?: string, mine?: boolean, page?: number, pageSize?: number}} filter
  * @returns {Promise<{items: object[], page: number, pageSize: number, totalCount: number}>}
  */
 export const searchDeploymentRequests = async ({ statuses = [], ...rest } = {}) => {

@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
+  Avatar,
   Box,
   Button,
   Card,
@@ -22,7 +23,7 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { FiChevronRight, FiPlus, FiSearch } from "react-icons/fi";
+import { FiChevronRight, FiPlus, FiSearch, FiUser } from "react-icons/fi";
 import Layout from "../components/Layout";
 import PageHeader from "../components/common/PageHeader";
 import Mono from "../components/common/Mono";
@@ -46,6 +47,7 @@ function DeploymentsInner() {
   const view = REQUEST_VIEWS.find((v) => v.key === params.get("view")) ?? REQUEST_VIEWS[0];
   const productId = params.get("product") ?? "";
   const clientId = params.get("client") ?? "";
+  const onlyMine = params.get("mine") === "1";
   const page = Number(params.get("page") ?? 1);
   const [search, setSearch] = useState(params.get("q") ?? "");
 
@@ -82,10 +84,11 @@ function DeploymentsInner() {
       productId: productId || undefined,
       clientId: clientId || undefined,
       search: params.get("q") || undefined,
+      mine: onlyMine || undefined,
       page,
       pageSize: PAGE_SIZE,
     }),
-    [view, productId, clientId, params, page]
+    [view, productId, clientId, onlyMine, params, page]
   );
 
   const load = useCallback(async () => {
@@ -119,7 +122,7 @@ function DeploymentsInner() {
 
   const from = result.totalCount === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
   const to = Math.min(page * PAGE_SIZE, result.totalCount);
-  const hasFilters = productId || clientId || params.get("q");
+  const hasFilters = productId || clientId || params.get("q") || onlyMine;
 
   return (
     <>
@@ -191,13 +194,24 @@ function DeploymentsInner() {
               </option>
             ))}
           </Select>
+          {hasRole("DEVELOPER") && (
+            <Button
+              variant={onlyMine ? "solid" : "outline"}
+              colorScheme={onlyMine ? "brand" : "gray"}
+              leftIcon={<FiUser />}
+              onClick={() => updateParams({ mine: onlyMine ? "" : "1" })}
+              aria-pressed={onlyMine}
+            >
+              Mis solicitudes
+            </Button>
+          )}
           {hasFilters && (
             <Button
               variant="ghost"
               colorScheme="gray"
               onClick={() => {
                 setSearch("");
-                updateParams({ product: "", client: "", q: "" });
+                updateParams({ product: "", client: "", q: "", mine: "" });
               }}
             >
               Limpiar filtros
@@ -226,6 +240,7 @@ function DeploymentsInner() {
                     <Th display={{ base: "none", lg: "table-cell" }}>Producto</Th>
                     <Th minW="180px">Progreso</Th>
                     <Th>Estado</Th>
+                    <Th display={{ base: "none", md: "table-cell" }}>Solicitada por</Th>
                     <Th display={{ base: "none", md: "table-cell" }}>Fecha</Th>
                     <Th w="40px" />
                   </Tr>
@@ -268,6 +283,27 @@ function DeploymentsInner() {
                       </Td>
                       <Td>
                         <RequestStatusBadge status={r.status} />
+                      </Td>
+                      <Td display={{ base: "none", md: "table-cell" }}>
+                        {r.createdByName ? (
+                          <HStack spacing={2}>
+                            <Avatar size="xs" name={r.createdByName} bg="brand.600" color="white" />
+                            <Box minW={0}>
+                              <Text fontSize="sm" noOfLines={1}>
+                                {r.createdByName}
+                              </Text>
+                              {r.submittedByName && r.submittedById !== r.createdById && (
+                                <Text fontSize="xs" color="text.muted" noOfLines={1}>
+                                  envió {r.submittedByName}
+                                </Text>
+                              )}
+                            </Box>
+                          </HStack>
+                        ) : (
+                          <Text fontSize="sm" color="text.muted">
+                            —
+                          </Text>
+                        )}
                       </Td>
                       <Td display={{ base: "none", md: "table-cell" }}>
                         <Text fontSize="sm">{r.submittedAt ? timeAgo(r.submittedAt) : formatDate(r.createdAt)}</Text>

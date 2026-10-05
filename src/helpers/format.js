@@ -28,5 +28,8 @@ export const timeAgo = (value) => {
   return "hace un momento";
 };
 
+/** «03 oct 2026, 10:15 · Ana Pérez» (sin persona si no se conoce). */
+export const dateWithPerson = (date, person) => (date ? `${formatDateTime(date)}${person ? ` · ${person}` : ""}` : "—");
+
 export const pluralize = (count, singular, plural = `${singular}s`) =>
   `${count} ${count === 1 ? singular : plural}`;
