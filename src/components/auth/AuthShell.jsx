@@ -1,4 +1,5 @@
-import { Box, Flex, HStack, Image, Stack, Text } from "@chakra-ui/react";
+import { Box, Flex, HStack, Stack, Text } from "@chakra-ui/react";
+import Logo, { LogoMark, Wordmark } from "../brand/Logo";
 import { FiActivity, FiPackage, FiUsers } from "react-icons/fi";
 
 const HIGHLIGHTS = [
@@ -7,13 +8,6 @@ const HIGHLIGHTS = [
   { icon: <FiActivity />, title: "Estado en vivo", text: "Cada solicitud muestra su avance por cliente en tiempo real." },
 ];
 
-export function BrandMark({ size = "28px", invert = true }) {
-  return (
-    <Box bg="brand.600" rounded="lg" p={2} flexShrink={0}>
-      <Image src="/noun-rocket-2280859.svg" alt="" boxSize={size} filter={invert ? "invert(1)" : "none"} />
-    </Box>
-  );
-}
 
 /**
  * Marco de las pantallas sin sesión (inicio de sesión, recuperación): panel de marca a la izquierda
@@ -33,10 +27,9 @@ export default function AuthShell({ title, subtitle, children, footer }) {
         p={12}
       >
         <HStack spacing={3}>
-          <BrandMark />
-          <Text fontWeight={800} fontSize="xl" letterSpacing="-0.02em">
-            DeploymentHub
-          </Text>
+          {/* Panel siempre oscuro: isotipo en su versión clara y «Hub» en el acento claro. */}
+          <LogoMark size={40} tono="oscuro" title="DeploymentHub" />
+          <Wordmark fontSize="xl" color="white" acento="#9bd1dd" />
         </HStack>
 
         <Stack spacing={8}>
@@ -67,12 +60,9 @@ export default function AuthShell({ title, subtitle, children, footer }) {
 
       <Flex flex="1" align="center" justify="center" px={4} py={10}>
         <Box w="full" maxW="400px">
-          <HStack spacing={3} mb={8} display={{ base: "flex", lg: "none" }}>
-            <BrandMark size="22px" />
-            <Text fontWeight={800} fontSize="lg" letterSpacing="-0.02em">
-              DeploymentHub
-            </Text>
-          </HStack>
+          <Box mb={8} display={{ base: "block", lg: "none" }}>
+            <Logo size={34} fontSize="lg" />
+          </Box>
           <Text as="h1" fontSize="2xl" fontWeight={800} letterSpacing="-0.02em">
             {title}
           </Text>

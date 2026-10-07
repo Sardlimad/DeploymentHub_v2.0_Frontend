@@ -52,6 +52,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { createClient, deleteClient, listClients, listProducts, updateClient } from "../../services/catalog";
 import { createInstallation, deleteInstallation, getInstallations, updateInstallation } from "../../services/installations";
 import { apiErrorMessage } from "../../services/api";
+import { confirmarKrud } from "../../integraciones/krud/eventos";
 import { formatDate } from "../../helpers/format";
 
 function useRun() {
@@ -150,7 +151,7 @@ function InstallationsTab({ client, installations, products, isAdmin, onChanged 
             </Text>
           ) : (
             <Flex gap={2} wrap="wrap">
-              <Select id="inst-pe" size="sm" maxW="260px" placeholder="Producto y ambiente" value={productEnvironmentId} onChange={(e) => setProductEnvironmentId(e.target.value)}>
+              <Select id="inst-pe" data-guia="cliente.producto-ambiente" size="sm" maxW="260px" placeholder="Producto y ambiente" value={productEnvironmentId} onChange={(e) => setProductEnvironmentId(e.target.value)}>
                 {options.map((o) => (
                   <option key={o.id} value={o.id}>
                     {o.label}
@@ -161,10 +162,13 @@ function InstallationsTab({ client, installations, products, isAdmin, onChanged 
               <Button
                 size="sm"
                 leftIcon={<FiPlus />}
+                data-guia="cliente.asignar-producto"
+                title={productEnvironmentId ? undefined : "Elige el producto y el ambiente"}
                 isDisabled={!productEnvironmentId}
                 onClick={() =>
                   run(() => createInstallation({ clientId: client.id, productEnvironmentId, baseUrl }), "Producto asignado").then((ok) => {
                     if (ok) {
+                      confirmarKrud("producto-asignado");
                       setProductEnvironmentId("");
                       setBaseUrl("");
                       onChanged();
@@ -187,11 +191,11 @@ function ClientForm({ value, onChange, showActive }) {
     <Stack spacing={4}>
       <FormControl isRequired>
         <FormLabel>Código</FormLabel>
-        <Input id="client-code" fontFamily="mono" value={value.code} onChange={(e) => onChange({ ...value, code: e.target.value })} maxLength={30} placeholder="UCENTRAL" />
+        <Input id="client-code" data-guia="cliente.codigo" fontFamily="mono" value={value.code} onChange={(e) => onChange({ ...value, code: e.target.value })} maxLength={30} placeholder="UCENTRAL" />
       </FormControl>
       <FormControl isRequired>
         <FormLabel>Nombre</FormLabel>
-        <Input id="client-name" value={value.name} onChange={(e) => onChange({ ...value, name: e.target.value })} maxLength={150} placeholder="Universidad Central" />
+        <Input id="client-name" data-guia="cliente.nombre" value={value.name} onChange={(e) => onChange({ ...value, name: e.target.value })} maxLength={150} placeholder="Universidad Central" />
       </FormControl>
       <Checkbox id="client-onprem" isChecked={value.isOnPremise} onChange={(e) => onChange({ ...value, isOnPremise: e.target.checked })}>
         Instalación en servidores del cliente (on-premise)
@@ -268,6 +272,7 @@ export default function ClientsCatalog() {
           isAdmin && (
             <Button
               leftIcon={<FiPlus />}
+              data-guia="clientes.nuevo"
               onClick={() => {
                 setNewClient({ code: "", name: "", isOnPremise: false });
                 createModal.onOpen();
@@ -406,6 +411,8 @@ export default function ClientsCatalog() {
               Volver
             </Button>
             <Button
+              data-guia="cliente.crear"
+              title={!newClient.code.trim() || !newClient.name.trim() ? "Escribe el código y el nombre del cliente" : undefined}
               isDisabled={!newClient.code.trim() || !newClient.name.trim()}
               onClick={async () => {
                 let id;

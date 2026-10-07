@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Badge,
+  HStack,
   Box,
   Button,
   Card,
@@ -35,20 +36,28 @@ import { apiErrorMessage } from "../services/api";
 import { RealtimeEvents } from "../services/deploymentsRealtime";
 import { useRealtimeRefresh } from "../hooks/useDeploymentsRealtime";
 import { formatDate } from "../helpers/format";
+import { LogoMark } from "../components/brand/Logo";
 
+// El símbolo de la marca como estado: la brecha entre lo instalado y lo publicado.
 function VersionState({ installation }) {
   if (installation.pendingRequestId) {
     return (
-      <Badge colorScheme="purple" variant="subtle">
-        Actualización en curso
-      </Badge>
+      <HStack spacing={2}>
+        <LogoMark size={18} estado="desplegando" />
+        <Badge colorScheme="purple" variant="subtle">
+          Actualización en curso
+        </Badge>
+      </HStack>
     );
   }
   if (installation.isOutdated) {
     return (
-      <Badge colorScheme="orange" variant="subtle">
-        Desactualizado
-      </Badge>
+      <HStack spacing={2}>
+        <LogoMark size={18} estado="desactualizado" />
+        <Badge colorScheme="orange" variant="subtle">
+          Desactualizado
+        </Badge>
+      </HStack>
     );
   }
   if (!installation.currentPackageId) {
@@ -59,9 +68,12 @@ function VersionState({ installation }) {
     );
   }
   return (
-    <Badge colorScheme="green" variant="subtle">
-      Al día
-    </Badge>
+    <HStack spacing={2}>
+      <LogoMark size={18} estado="al-dia" />
+      <Badge colorScheme="green" variant="subtle">
+        Al día
+      </Badge>
+    </HStack>
   );
 }
 
@@ -138,6 +150,13 @@ function ClientsStatusInner() {
   const productsInOutdated = [...new Set(outdatedWithoutRequest.map((r) => r.productId))];
   const canCreateFromHere = hasRole("DEVELOPER") && productsInOutdated.length === 1;
 
+  const motivoSinActualizar =
+    productsInOutdated.length > 1
+      ? "Filtra por un producto para crear la solicitud"
+      : outdatedWithoutRequest.length === 0
+      ? "No hay clientes desactualizados sin solicitud"
+      : "";
+
   return (
     <>
       <PageHeader
@@ -145,19 +164,13 @@ function ClientsStatusInner() {
         description="Qué versión tiene cada cliente en cada ambiente, comparada con la última aplicada en ese producto y ambiente."
         actions={
           hasRole("DEVELOPER") && (
-            <Tooltip
-              label={
-                productsInOutdated.length > 1
-                  ? "Filtra por un producto para crear la solicitud"
-                  : outdatedWithoutRequest.length === 0
-                  ? "No hay clientes desactualizados sin solicitud"
-                  : ""
-              }
-              isDisabled={canCreateFromHere}
-            >
+            <Tooltip label={motivoSinActualizar} isDisabled={canCreateFromHere}>
               <Button
                 leftIcon={<FiSend />}
                 isDisabled={!canCreateFromHere}
+                // KRUD lee el title de un control desactivado para explicar por qué.
+                title={canCreateFromHere ? undefined : motivoSinActualizar}
+                data-guia="estado.actualizar-desactualizados"
                 onClick={() =>
                   navigate("/deployments/new", {
                     state: { productId: productsInOutdated[0], installationIds: outdatedWithoutRequest.map((r) => r.id) },
@@ -198,7 +211,7 @@ function ClientsStatusInner() {
             ))}
           </Select>
           <FormControl display="flex" alignItems="center" w="auto">
-            <Switch id="status-outdated" isChecked={onlyOutdated} onChange={(e) => setParam("outdated", e.target.checked ? "1" : "")} />
+            <Switch id="status-outdated" data-guia="estado.solo-desactualizados" isChecked={onlyOutdated} onChange={(e) => setParam("outdated", e.target.checked ? "1" : "")} />
             <FormLabel htmlFor="status-outdated" mb={0} ml={2} fontSize="sm">
               Solo desactualizados
             </FormLabel>

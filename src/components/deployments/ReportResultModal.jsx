@@ -204,6 +204,7 @@ export default function ReportResultModal({ isOpen, onClose, target, toStatus, a
             colorScheme={toStatus === "Failed" || toStatus === "RolledBack" ? "red" : toStatus === "Applied" ? "green" : "brand"}
             onClick={submit}
             isLoading={saving}
+            data-guia="resultado.confirmar"
             isDisabled={(commentRequired && !comment.trim()) || invalidApplied}
           >
             {targetActionLabel(target.status, toStatus)}

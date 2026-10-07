@@ -20,7 +20,7 @@ import { formatDate } from "../../helpers/format";
  * Selector de clientes destino (instalaciones de un producto) con atajos para
  * elegir a los desactualizados. Se usa en el asistente y al agregar clientes a un borrador.
  */
-export default function InstallationPicker({ installations, selected, onChange, excludeIds = [], warnings = {} }) {
+export default function InstallationPicker({ installations, selected, onChange, excludeIds = [], warnings = {}, dataGuia }) {
   const [environment, setEnvironment] = useState("");
   const [search, setSearch] = useState("");
 
@@ -94,7 +94,7 @@ export default function InstallationPicker({ installations, selected, onChange, 
         )}
       </Flex>
 
-      <Stack spacing={1.5} maxH="420px" overflowY="auto" pr={1}>
+      <Stack spacing={1.5} maxH="420px" overflowY="auto" pr={1} data-guia={dataGuia}>
         {visible.map((i) => {
           const checked = selected.includes(i.id);
           return (

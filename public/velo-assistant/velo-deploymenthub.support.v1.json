@@ -1,0 +1,481 @@
+{
+  "applicationId": "velo-deploymenthub",
+  "version": "1.1.0",
+  "screens": [
+    {
+      "id": "inicio",
+      "title": "Inicio",
+      "route": "/",
+      "group": "General"
+    },
+    {
+      "id": "dashboard",
+      "title": "Panel",
+      "route": "/dashboard",
+      "group": "Operación"
+    },
+    {
+      "id": "deployments",
+      "title": "Solicitudes",
+      "route": "/deployments",
+      "group": "Operación"
+    },
+    {
+      "id": "deployments-new",
+      "title": "Nueva solicitud",
+      "route": "/deployments/new",
+      "group": "Operación",
+      "permission": "deployhub.deploy"
+    },
+    {
+      "id": "clients-status",
+      "title": "Estado de clientes",
+      "route": "/clients-status",
+      "group": "Operación"
+    },
+    {
+      "id": "packages",
+      "title": "Paquetes",
+      "route": "/packages",
+      "group": "Catálogo"
+    },
+    {
+      "id": "catalogs-products",
+      "title": "Productos",
+      "route": "/catalogs/products",
+      "group": "Catálogo"
+    },
+    {
+      "id": "catalogs-clients",
+      "title": "Clientes",
+      "route": "/catalogs/clients",
+      "group": "Catálogo"
+    },
+    {
+      "id": "catalogs-environments",
+      "title": "Ambientes",
+      "route": "/catalogs/environments",
+      "group": "Catálogo"
+    },
+    {
+      "id": "users",
+      "title": "Usuarios",
+      "route": "/users",
+      "group": "Administración",
+      "permission": "deployhub.admin"
+    },
+    {
+      "id": "profile",
+      "title": "Mi perfil",
+      "route": "/profile",
+      "group": "Cuenta"
+    }
+  ],
+  "articles": [
+    {
+      "id": "crear-solicitud",
+      "title": "Cómo crear y enviar una solicitud de despliegue",
+      "paragraphs": [
+        "Pulse Nueva solicitud en el menú. Elija el producto, arme el paquete o use uno existente, elija los clientes y pulse Crear y enviar.",
+        "Para armar el paquete, escriba una descripción y pulse Elegir comprimido .zip: se detectan los scripts .sql de la carpeta SCRIPTS y los reportes .rdl. Revise lo detectado y pulse Agregar al paquete. Los módulos y servicios se agregan a mano.",
+        "Al enviarla, el paquete queda bloqueado y cada cliente pasa a Pendiente. Infraestructura registra el resultado de cada cliente. Si prefiere revisarla antes, use Guardar borrador.",
+        "Necesita el rol Desarrollador o Administrador."
+      ],
+      "keywords": [
+        "solicitud",
+        "nueva solicitud",
+        "crear solicitud",
+        "enviar solicitud",
+        "despliegue",
+        "desplegar",
+        "actualización",
+        "enviar a clientes"
+      ],
+      "route": "/deployments/new",
+      "guideId": "crear-solicitud",
+      "permission": "deployhub.deploy"
+    },
+    {
+      "id": "registrar-resultado",
+      "title": "Cómo registrar el resultado de un despliegue en un cliente",
+      "paragraphs": [
+        "Abra la solicitud desde Solicitudes. En la pestaña Clientes, cada cliente muestra los botones de su siguiente estado: Aplicado, Con fallo o Iniciar.",
+        "Al marcar Aplicado o Con fallo puede indicar el resultado de cada artefacto y un comentario. Si algo falló, el comentario es obligatorio.",
+        "Para varios clientes a la vez, márquelos y use las acciones masivas. El estado general de la solicitud se calcula solo a partir de sus clientes.",
+        "Necesita el rol Infraestructura o Administrador."
+      ],
+      "keywords": [
+        "resultado",
+        "aplicado",
+        "fallido",
+        "con fallo",
+        "registrar resultado",
+        "marcar aplicado",
+        "error en scripts",
+        "revertir"
+      ],
+      "route": "/deployments",
+      "guideId": "registrar-resultado",
+      "permission": "deployhub.operate"
+    },
+    {
+      "id": "clientes-desactualizados",
+      "title": "Cómo saber qué clientes necesitan actualización",
+      "paragraphs": [
+        "En Estado de clientes cada instalación (cliente, producto y ambiente) muestra el paquete que tiene aplicado y si está desactualizada.",
+        "Active Solo desactualizados para verlas. Si todas son del mismo producto, Actualizar desactualizados abre una nueva solicitud con esos clientes ya elegidos.",
+        "Un paquete personalizado para un cliente no marca a los demás como desactualizados."
+      ],
+      "keywords": [
+        "desactualizado",
+        "desactualizados",
+        "qué versión tiene",
+        "versión vigente",
+        "estado de clientes",
+        "pendientes de actualizar"
+      ],
+      "route": "/clients-status",
+      "guideId": "actualizar-desactualizados"
+    },
+    {
+      "id": "crear-paquete",
+      "title": "Cómo crear un paquete detectando los scripts del .zip",
+      "paragraphs": [
+        "En Paquetes pulse Nuevo paquete, elija el producto y describa el paquete. Pulse Elegir comprimido .zip y elija el mismo .zip que subió a OneDrive: se lee en su equipo y no se sube a ningún lado.",
+        "De cada .sql se registran todos los objetos que define (procedimientos, funciones, tablas, vistas, tipos) y cada .rdl como reporte. Lo que no existe en el catálogo entra como Nuevo.",
+        "Revise lo detectado, pulse Agregar al paquete y luego Crear paquete."
+      ],
+      "keywords": [
+        "paquete",
+        "nuevo paquete",
+        "zip",
+        "comprimido",
+        "detectar scripts",
+        "scripts",
+        "reportes",
+        "rdl",
+        "artefactos"
+      ],
+      "route": "/packages",
+      "guideId": "crear-paquete",
+      "permission": "deployhub.deploy"
+    },
+    {
+      "id": "actualizacion-personalizada",
+      "title": "Qué es una actualización personalizada",
+      "paragraphs": [
+        "Es un paquete que solo aplica a un cliente. Se marca con Actualización personalizada al crear el paquete y se elige el cliente.",
+        "Solo se puede enviar a ese cliente, no cambia su versión vigente y no marca a los demás clientes como desactualizados."
+      ],
+      "keywords": [
+        "personalizada",
+        "personalizado",
+        "un solo cliente",
+        "actualización personalizada",
+        "paquete personalizado"
+      ],
+      "route": "/packages"
+    },
+    {
+      "id": "versiones-por-cliente",
+      "title": "Versiones de un artefacto por cliente",
+      "paragraphs": [
+        "Un mismo nombre puede tener una versión general y una por cliente. Por ejemplo, el reporte de Pagaré de FESC no es igual al de UDV, aunque se llamen igual.",
+        "Al agregar por nombre o con el detector se usa la versión del cliente del paquete; si no la tiene, se crea. Si elige a mano la versión de otro cliente, se avisa antes de agregarla.",
+        "En un paquete general, la versión personalizada deja de serlo, y los clientes con versión propia se avisan al elegir los destinos."
+      ],
+      "keywords": [
+        "versión",
+        "versiones",
+        "personalizado de",
+        "pagaré",
+        "mismo nombre",
+        "reporte personalizado",
+        "general"
+      ],
+      "route": "/catalogs/products"
+    },
+    {
+      "id": "roles",
+      "title": "Qué puede hacer cada rol",
+      "paragraphs": [
+        "Desarrollador: crea paquetes y solicitudes y las envía a Infraestructura.",
+        "Infraestructura: aprueba solicitudes enviadas y registra el resultado de cada cliente.",
+        "Administrador: todo lo anterior, más productos, clientes, ambientes, catálogo de artefactos y usuarios. Los usuarios se gestionan en Administración › Usuarios."
+      ],
+      "keywords": [
+        "rol",
+        "roles",
+        "permisos",
+        "usuario",
+        "usuarios",
+        "administrador",
+        "infraestructura",
+        "desarrollador",
+        "acceso"
+      ],
+      "route": "/users"
+    },
+    {
+      "id": "cambiar-contrasena",
+      "title": "Cómo cambiar la contraseña",
+      "paragraphs": [
+        "En el menú de usuario, arriba a la derecha, elija Mi perfil. Escriba la contraseña actual, la nueva dos veces y pulse Guardar contraseña.",
+        "Debe tener 8 caracteres o más, con letras y números. Si no recuerda la actual, cierre sesión y use ¿La olvidaste? en el inicio de sesión."
+      ],
+      "keywords": [
+        "contraseña",
+        "cambiar contraseña",
+        "clave",
+        "olvidé la contraseña",
+        "perfil"
+      ],
+      "route": "/profile"
+    },
+    {
+      "id": "registrar-cliente",
+      "title": "Cómo registrar un cliente nuevo y asignarle los productos que contrató",
+      "paragraphs": [
+        "Cuando llega una institución nueva (por ejemplo, una universidad), primero se registra como cliente y después se le asignan los productos que contrató, en cada ambiente. Así DeploymentHub sabe qué tiene y qué actualizaciones le faltan.",
+        "Vaya a Catálogo › Clientes y pulse Nuevo cliente. Escriba el código (por ejemplo UCENTRAL) y el nombre, marque si es On-Premise y pulse Crear y asignar productos.",
+        "Se abre la ficha del cliente en Productos contratados. En Asignar producto elija el producto y el ambiente (por ejemplo ClassLimitless · PROD), escriba la URL del cliente si la conoce y pulse Asignar. Repita por cada producto y ambiente contratado.",
+        "Necesita el rol Administrador. Si un producto no aparece en la lista, primero hay que darle ese ambiente en Catálogo › Productos.",
+        "Para enviarle después una actualización, cree una solicitud en Operación › Nueva solicitud y marque a ese cliente."
+      ],
+      "keywords": [
+        "cliente nuevo",
+        "registrar cliente",
+        "alta de cliente",
+        "nueva universidad",
+        "nueva institución",
+        "llegó un cliente",
+        "llegó una universidad",
+        "productos contratados",
+        "lo que contrató",
+        "asignar productos",
+        "asignar producto",
+        "instalación",
+        "contratar producto"
+      ],
+      "route": "/catalogs/clients",
+      "guideId": "registrar-cliente",
+      "permission": "deployhub.admin"
+    },
+    {
+      "id": "productos-y-ambientes",
+      "title": "Productos y ambientes: qué son y cómo se registran",
+      "paragraphs": [
+        "Un producto es una aplicación que se despliega (por ejemplo ClassLimitless) y un ambiente es dónde se despliega (por ejemplo DEV, TEST o PROD).",
+        "Los ambientes se crean en Catálogo › Ambientes. En Catálogo › Productos se registra el producto con Nuevo producto y, en su ficha, pestaña Ambientes, se le agregan los ambientes donde existe.",
+        "Solo después de eso el producto aparece para asignarlo a un cliente en Catálogo › Clientes.",
+        "Necesita el rol Administrador."
+      ],
+      "keywords": [
+        "producto",
+        "nuevo producto",
+        "ambiente",
+        "ambientes",
+        "dev",
+        "test",
+        "prod",
+        "producción",
+        "registrar producto",
+        "agregar ambiente"
+      ],
+      "route": "/catalogs/products",
+      "permission": "deployhub.admin"
+    }
+  ],
+  "guides": [
+    {
+      "id": "crear-solicitud",
+      "title": "Crear y enviar una solicitud",
+      "purpose": "En Operación › Nueva solicitud, armar el paquete desde su .zip y enviarlo a los clientes elegidos.",
+      "steps": [
+        {
+          "title": "Elija el producto",
+          "text": "Pulse la tarjeta del producto que se va a actualizar.",
+          "route": "/deployments/new"
+        },
+        {
+          "title": "Pase al paquete",
+          "text": "Pulse Siguiente.",
+          "route": "/deployments/new"
+        },
+        {
+          "title": "Describa el paquete",
+          "text": "Escriba qué incluye, por ejemplo «Anulación de facturas en Cajas». Si existe, pegue también el enlace de OneDrive.",
+          "route": "/deployments/new"
+        },
+        {
+          "title": "Detecte los scripts",
+          "text": "Pulse Elegir comprimido .zip y elija el mismo .zip que subió a OneDrive. Se lee en su equipo. Paso solo al siguiente cuando lo elija.",
+          "route": "/deployments/new"
+        },
+        {
+          "title": "Agregue lo detectado",
+          "text": "Revise los artefactos encontrados y pulse Agregar al paquete.",
+          "route": "/deployments/new"
+        },
+        {
+          "title": "Pase a los clientes",
+          "text": "Pulse Siguiente.",
+          "route": "/deployments/new"
+        },
+        {
+          "title": "Elija los clientes",
+          "text": "Marque los clientes que deben recibir el paquete. Elegir desactualizados los marca de una vez.",
+          "route": "/deployments/new"
+        },
+        {
+          "title": "Revise",
+          "text": "Pulse Siguiente para ver el resumen.",
+          "route": "/deployments/new"
+        },
+        {
+          "title": "Envíe la solicitud",
+          "text": "Pulse Crear y enviar. Infraestructura la verá pendiente en ese momento.",
+          "route": "/deployments/new"
+        }
+      ],
+      "route": "/deployments/new",
+      "permission": "deployhub.deploy"
+    },
+    {
+      "id": "registrar-resultado",
+      "title": "Registrar el resultado en un cliente",
+      "purpose": "En Operación › Solicitudes, abrir la solicitud y marcar el cliente como aplicado o con fallo.",
+      "steps": [
+        {
+          "title": "Abra la solicitud",
+          "text": "Pulse la fila de la solicitud que se está aplicando.",
+          "route": "/deployments"
+        },
+        {
+          "title": "Elija el resultado",
+          "text": "En la fila del cliente, pulse Aplicado o Con fallo.",
+          "route": "/deployments"
+        },
+        {
+          "title": "Confirme",
+          "text": "Si algo falló, marque el artefacto y escriba el error. Pulse el botón de confirmar.",
+          "route": "/deployments"
+        }
+      ],
+      "route": "/deployments",
+      "permission": "deployhub.operate"
+    },
+    {
+      "id": "actualizar-desactualizados",
+      "title": "Actualizar los clientes desactualizados",
+      "purpose": "En Operación › Estado de clientes, filtrar los desactualizados y crear una solicitud con ellos.",
+      "steps": [
+        {
+          "title": "Filtre los desactualizados",
+          "text": "Active Solo desactualizados.",
+          "route": "/clients-status"
+        },
+        {
+          "title": "Cree la solicitud",
+          "text": "Pulse Actualizar desactualizados. Si hay varios productos, filtre antes por uno.",
+          "route": "/clients-status"
+        },
+        {
+          "title": "Elija el paquete",
+          "text": "Use un paquete existente o arme uno nuevo, y pulse Siguiente.",
+          "route": "/deployments/new"
+        },
+        {
+          "title": "Revise los clientes",
+          "text": "Los clientes desactualizados ya vienen marcados. Pulse Siguiente.",
+          "route": "/deployments/new"
+        },
+        {
+          "title": "Envíe la solicitud",
+          "text": "Pulse Crear y enviar.",
+          "route": "/deployments/new"
+        }
+      ],
+      "route": "/clients-status",
+      "permission": "deployhub.deploy"
+    },
+    {
+      "id": "crear-paquete",
+      "title": "Crear un paquete desde el .zip",
+      "purpose": "En Catálogo › Paquetes, crear un paquete detectando los scripts y reportes del comprimido.",
+      "steps": [
+        {
+          "title": "Abra el formulario",
+          "text": "Pulse Nuevo paquete.",
+          "route": "/packages"
+        },
+        {
+          "title": "Elija el producto",
+          "text": "Elija el producto al que pertenece el paquete.",
+          "route": "/packages"
+        },
+        {
+          "title": "Describa el paquete",
+          "text": "Escriba qué incluye.",
+          "route": "/packages"
+        },
+        {
+          "title": "Detecte los scripts",
+          "text": "Pulse Elegir comprimido .zip y elija el comprimido del paquete. Paso solo al siguiente cuando lo elija.",
+          "route": "/packages"
+        },
+        {
+          "title": "Agregue lo detectado",
+          "text": "Revise los artefactos encontrados y pulse Agregar al paquete.",
+          "route": "/packages"
+        },
+        {
+          "title": "Cree el paquete",
+          "text": "Pulse Crear paquete. Lo nuevo entra al catálogo del producto.",
+          "route": "/packages"
+        }
+      ],
+      "route": "/packages",
+      "permission": "deployhub.deploy"
+    },
+    {
+      "id": "registrar-cliente",
+      "title": "Registrar un cliente nuevo y asignarle sus productos",
+      "purpose": "En Catálogo › Clientes, dar de alta una institución y asignarle cada producto y ambiente que contrató.",
+      "steps": [
+        {
+          "title": "Abra el alta",
+          "text": "Pulse Nuevo cliente.",
+          "route": "/catalogs/clients"
+        },
+        {
+          "title": "Escriba el código",
+          "text": "Un código corto y único, por ejemplo UCENTRAL.",
+          "route": "/catalogs/clients"
+        },
+        {
+          "title": "Escriba el nombre",
+          "text": "El nombre de la institución.",
+          "route": "/catalogs/clients"
+        },
+        {
+          "title": "Créelo",
+          "text": "Pulse Crear y asignar productos. Se abre su ficha en Productos contratados.",
+          "route": "/catalogs/clients"
+        },
+        {
+          "title": "Elija producto y ambiente",
+          "text": "En Asignar producto, elija el producto y el ambiente que contrató.",
+          "route": "/catalogs/clients"
+        },
+        {
+          "title": "Asígnelo",
+          "text": "Pulse Asignar. Repita por cada producto y ambiente contratado.",
+          "route": "/catalogs/clients"
+        }
+      ],
+      "route": "/catalogs/clients",
+      "permission": "deployhub.admin"
+    }
+  ]
+}

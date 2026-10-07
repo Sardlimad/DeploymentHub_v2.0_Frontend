@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { BrowserRouter, Navigate, Route, Routes, useLocation, useParams } from "react-router-dom";
 import { AuthContext, AuthProvider } from "./context/AuthContext";
 import { RealtimeProvider } from "./context/RealtimeContext";
+import KrudAsistente from "./integraciones/krud/KrudAsistente";
 import Login from "./pages/Login";
 import PasswordRecovery from "./pages/PasswordRecovery";
 import Dashboard from "./pages/Dashboard";
@@ -34,6 +35,12 @@ function LegacyRequestEdit() {
   return <Navigate to={`/deployments/${id}`} replace />;
 }
 
+// KRUD solo se monta con sesión: firma al usuario con su token. Cambiar de usuario lo vuelve a montar.
+function KrudConSesion() {
+  const { token, user } = useContext(AuthContext);
+  return token && user ? <KrudAsistente key={user.id} /> : null;
+}
+
 const page = (element, authorizedRoles) => <ProtectedRoute authorizedRoles={authorizedRoles}>{element}</ProtectedRoute>;
 
 function App() {
@@ -41,6 +48,7 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <RealtimeProvider>
+          <KrudConSesion />
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/auth/password_recovery" element={<PasswordRecovery />} />

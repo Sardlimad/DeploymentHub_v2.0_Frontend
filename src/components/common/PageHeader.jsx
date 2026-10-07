@@ -25,7 +25,8 @@ export default function PageHeader({ title, description, actions, breadcrumbs, m
         </Breadcrumb>
       )}
       <Flex justify="space-between" align={{ base: "stretch", md: "center" }} gap={4} wrap="wrap">
-        <Box minW={0} flex="1">
+        {/* Base de 18rem: en pantallas angostas las acciones bajan de línea en vez de aplastar el texto. */}
+        <Box minW={0} flex="1 1 18rem">
           <HStack spacing={3} wrap="wrap">
             <Heading size="lg" letterSpacing="-0.02em" sx={{ textWrap: "balance" }}>
               {title}

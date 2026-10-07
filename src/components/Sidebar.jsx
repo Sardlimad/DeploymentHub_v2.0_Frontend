@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Box, Button, Flex, HStack, Image, Text, Tooltip, VStack } from "@chakra-ui/react";
+import { LogoMark, Wordmark } from "./brand/Logo";
+import { Box, Button, Flex, HStack, Text, Tooltip, VStack } from "@chakra-ui/react";
 import {
   FiActivity,
   FiBox,
@@ -46,6 +47,7 @@ function NavItem({ item, collapsed, onNavigate }) {
       as={NavLink}
       to={item.to}
       onClick={onNavigate}
+      data-guia={`menu${item.to.replaceAll("/", ".")}`}
       display="flex"
       alignItems="center"
       gap={3}
@@ -83,14 +85,8 @@ export default function Sidebar({ collapsed = false, onNavigate }) {
   return (
     <Flex direction="column" h="full" py={4} px={collapsed ? 2 : 3} gap={5}>
       <HStack px={collapsed ? 0 : 2} justify={collapsed ? "center" : "flex-start"} spacing={2.5}>
-        <Box bg="brand.600" rounded="md" p={1.5} flexShrink={0}>
-          <Image src="/noun-rocket-2280859.svg" alt="" boxSize="20px" filter="invert(1)" />
-        </Box>
-        {!collapsed && (
-          <Text fontWeight={800} letterSpacing="-0.02em" fontSize="md">
-            DeploymentHub
-          </Text>
-        )}
+        <LogoMark size={30} title="DeploymentHub" />
+        {!collapsed && <Wordmark fontSize="lg" />}
       </HStack>
 
       {canCreate && (
@@ -104,6 +100,7 @@ export default function Sidebar({ collapsed = false, onNavigate }) {
             size="sm"
             px={collapsed ? 0 : 4}
             aria-label="Nueva solicitud"
+            data-guia="menu.nueva-solicitud"
           >
             {collapsed ? <FiPlus /> : "Nueva solicitud"}
           </Button>

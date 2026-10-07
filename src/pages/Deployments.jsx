@@ -247,7 +247,7 @@ function DeploymentsInner() {
                 </Thead>
                 <Tbody>
                   {result.items.map((r) => (
-                    <Tr
+                    <Tr data-guia="solicitudes.fila"
                       key={r.id}
                       cursor="pointer"
                       _hover={{ bg: "bg.hover" }}

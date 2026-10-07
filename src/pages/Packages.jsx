@@ -53,6 +53,7 @@ import ArtifactEditor from "../components/packages/ArtifactEditor";
 import { AuthContext } from "../context/AuthContext";
 import { addPackageArtifact, createPackage, deletePackage, getPackages, removePackageArtifact, updatePackageArtifact } from "../services/packages";
 import { listClients, listProducts } from "../services/catalog";
+import { confirmarKrud } from "../integraciones/krud/eventos";
 import { apiErrorMessage } from "../services/api";
 import { RealtimeEvents } from "../services/deploymentsRealtime";
 import { useRealtimeRefresh } from "../hooks/useDeploymentsRealtime";
@@ -283,6 +284,19 @@ function NewPackageModal({ isOpen, onClose, products, clients, onCreated }) {
     }
   }, [isOpen, products]);
 
+  // Por qué no se puede crear todavía (también lo lee la guía de KRUD desde el title del botón).
+  const motivoSinCrear = !productId
+    ? "Elige el producto"
+    : !description.trim()
+    ? "Describe el paquete"
+    : items.length === 0
+    ? "Agrega al menos un artefacto"
+    : packageUrl && !isValidUrl(packageUrl)
+    ? "El enlace del paquete no es una URL válida"
+    : customClientId === null
+    ? "Elige el cliente de la actualización personalizada"
+    : "";
+
   const save = async () => {
     setSaving(true);
     try {
@@ -293,6 +307,7 @@ function NewPackageModal({ isOpen, onClose, products, clients, onCreated }) {
         customClientId: customClientId || null,
         artifacts: toPackageArtifacts(items),
       });
+      confirmarKrud("paquete-creado");
       toast({
         title: "Paquete creado",
         description: created.newArtifactsCount ? `${created.newArtifactsCount} artefactos nuevos entraron al catálogo.` : undefined,
@@ -318,7 +333,7 @@ function NewPackageModal({ isOpen, onClose, products, clients, onCreated }) {
             <Grid templateColumns={{ base: "1fr", md: "1fr 2fr" }} gap={3}>
               <FormControl isRequired>
                 <FormLabel fontSize="sm">Producto</FormLabel>
-                <Select id="new-package-product" placeholder="Elige un producto" value={productId} onChange={(e) => { setProductId(e.target.value); setItems([]); }}>
+                <Select id="new-package-product" data-guia="paquete.producto" placeholder="Elige un producto" value={productId} onChange={(e) => { setProductId(e.target.value); setItems([]); }}>
                   {products.map((p) => (
                     <option key={p.id} value={p.id}>
                       {p.name}
@@ -328,7 +343,7 @@ function NewPackageModal({ isOpen, onClose, products, clients, onCreated }) {
               </FormControl>
               <FormControl isRequired>
                 <FormLabel fontSize="sm">Descripción</FormLabel>
-                <Input id="new-package-description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Anulación de facturas en Cajas" maxLength={500} />
+                <Input id="new-package-description" data-guia="paquete.descripcion" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Anulación de facturas en Cajas" maxLength={500} />
               </FormControl>
             </Grid>
             <FormControl isInvalid={!!packageUrl && !isValidUrl(packageUrl)}>
@@ -371,7 +386,13 @@ function NewPackageModal({ isOpen, onClose, products, clients, onCreated }) {
           <Button variant="ghost" colorScheme="gray" onClick={onClose}>
             Volver
           </Button>
-          <Button onClick={save} isLoading={saving} isDisabled={!productId || !description.trim() || items.length === 0 || (!!packageUrl && !isValidUrl(packageUrl)) || customClientId === null}>
+          <Button
+            data-guia="paquete.crear"
+            onClick={save}
+            isLoading={saving}
+            isDisabled={!!motivoSinCrear}
+            title={motivoSinCrear || undefined}
+          >
             Crear paquete
           </Button>
         </ModalFooter>
@@ -425,7 +446,7 @@ function PackagesInner() {
         description="Un paquete es el conjunto ordenado de artefactos que se ejecuta en cada cliente. Los artefactos «Nuevo» entraron al catálogo con ese paquete."
         actions={
           canEdit && (
-            <Button leftIcon={<FiPlus />} onClick={newModal.onOpen}>
+            <Button leftIcon={<FiPlus />} onClick={newModal.onOpen} data-guia="paquetes.nuevo">
               Nuevo paquete
             </Button>
           )

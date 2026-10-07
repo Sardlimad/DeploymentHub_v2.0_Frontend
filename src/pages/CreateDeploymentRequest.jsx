@@ -56,6 +56,7 @@ import { apiErrorMessage } from "../services/api";
 import { toPackageArtifacts } from "../helpers/packageArtifacts";
 import { formatDate, pluralize } from "../helpers/format";
 import { isValidUrl } from "../helpers/validations";
+import { confirmarKrud } from "../integraciones/krud/eventos";
 import { customClientNames, customConflicts, customEffectText, ownVersionsOverwritten } from "../helpers/customArtifacts";
 
 const STEPS = [
@@ -213,7 +214,10 @@ function WizardInner() {
       });
       requestId = request.id;
       await addTargets(requestId, chosenInstallations.map((i) => i.id));
-      if (send) await submitDeploymentRequest(requestId);
+      if (send) {
+        await submitDeploymentRequest(requestId);
+        confirmarKrud("solicitud-enviada");
+      }
 
       toast({
         title: send ? `${request.displayNumber} enviada` : `${request.displayNumber} guardada como borrador`,
@@ -291,7 +295,7 @@ function WizardInner() {
             ) : (
               <Stack spacing={4}>
                 <Heading size="sm">¿Qué producto se actualiza?</Heading>
-                <SimpleGrid columns={{ base: 1, md: 2, xl: 3 }} spacing={3}>
+                <SimpleGrid columns={{ base: 1, md: 2, xl: 3 }} spacing={3} data-guia="solicitud.producto">
                   {products.map((p) => (
                     <OptionCard key={p.id} selected={p.id === productId} onClick={() => chooseProduct(p.id)}>
                       <HStack justify="space-between">
@@ -363,6 +367,7 @@ function WizardInner() {
                       <FormLabel>Descripción del paquete</FormLabel>
                       <Input
                         id="package-description"
+                        data-guia="solicitud.paquete.descripcion"
                         placeholder="Anulación de facturas en Cajas"
                         value={newPackage.description}
                         onChange={(e) => setNewPackage({ ...newPackage, description: e.target.value })}
@@ -459,6 +464,7 @@ function WizardInner() {
                 selected={selectedInstallations}
                 onChange={setSelectedInstallations}
                 warnings={overwriteWarnings}
+                dataGuia="solicitud.clientes"
               />
             </Stack>
           )}
@@ -603,15 +609,15 @@ function WizardInner() {
               </Text>
             )}
             {step < STEPS.length - 1 ? (
-              <Button rightIcon={<FiArrowRight />} onClick={() => setStep(step + 1)} isDisabled={!!blocker}>
+              <Button rightIcon={<FiArrowRight />} onClick={() => setStep(step + 1)} isDisabled={!!blocker} title={blocker ?? undefined} data-guia="solicitud.siguiente">
                 Siguiente
               </Button>
             ) : (
               <>
-                <Button variant="outline" leftIcon={<FiSave />} onClick={() => save(false)} isLoading={saving === "draft"} isDisabled={!!saving}>
+                <Button variant="outline" leftIcon={<FiSave />} onClick={() => save(false)} isLoading={saving === "draft"} isDisabled={!!saving} data-guia="solicitud.borrador">
                   Guardar borrador
                 </Button>
-                <Button leftIcon={<FiSend />} onClick={() => save(true)} isLoading={saving === "send"} isDisabled={!!saving}>
+                <Button leftIcon={<FiSend />} onClick={() => save(true)} isLoading={saving === "send"} isDisabled={!!saving} data-guia="solicitud.enviar">
                   Crear y enviar
                 </Button>
               </>

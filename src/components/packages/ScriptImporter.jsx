@@ -133,9 +133,16 @@ export default function ScriptImporter({ catalog, existingItems, onAdd, packageC
     setProgress(null);
   };
 
+  // El valor se limpia al abrir el selector (y no al leer): así se puede volver a elegir el mismo
+  // archivo y, mientras tanto, la guía de KRUD ve que ya se eligió uno.
+  const abrirSelector = (input) => {
+    if (!input.current) return;
+    input.current.value = "";
+    input.current.click();
+  };
+
   const onZipChosen = async (event) => {
     const file = event.target.files?.[0];
-    event.target.value = "";
     if (!file) return;
     try {
       setProgress({ done: 0, total: 0 });
@@ -159,7 +166,6 @@ export default function ScriptImporter({ catalog, existingItems, onAdd, packageC
 
   const onFolderChosen = async (event) => {
     const all = [...(event.target.files ?? [])];
-    event.target.value = "";
     const { chosen, note } = pickPackageFiles(all.map((f) => ({ path: f.webkitRelativePath || f.name, file: f })));
     if (chosen.length === 0) {
       setError("La carpeta elegida no contiene archivos .sql ni reportes .rdl.");
@@ -220,14 +226,19 @@ export default function ScriptImporter({ catalog, existingItems, onAdd, packageC
           </Text>
         </Box>
         <HStack>
-          <input ref={zipInput} type="file" accept=".zip,application/zip" hidden onChange={onZipChosen} />
-          <input ref={folderInput} type="file" hidden webkitdirectory="" directory="" multiple onChange={onFolderChosen} />
-          <Button size="sm" leftIcon={<FiPackage />} onClick={() => zipInput.current?.click()} isDisabled={!!progress}>
-            Elegir comprimido .zip
-          </Button>
-          <Button size="sm" variant="outline" leftIcon={<FiFolder />} onClick={() => folderInput.current?.click()} isDisabled={!!progress}>
-            Carpeta del paquete
-          </Button>
+          {/* La guía de KRUD lee el valor del input oculto: el contenedor lleva el data-guia. */}
+          <Box display="inline-flex" data-guia="paquete.elegir-zip">
+            <input ref={zipInput} type="file" accept=".zip,application/zip" hidden onChange={onZipChosen} />
+            <Button size="sm" leftIcon={<FiPackage />} onClick={() => abrirSelector(zipInput)} isDisabled={!!progress}>
+              Elegir comprimido .zip
+            </Button>
+          </Box>
+          <Box display="inline-flex" data-guia="paquete.elegir-carpeta">
+            <input ref={folderInput} type="file" hidden webkitdirectory="" directory="" multiple onChange={onFolderChosen} />
+            <Button size="sm" variant="outline" leftIcon={<FiFolder />} onClick={() => abrirSelector(folderInput)} isDisabled={!!progress}>
+              Carpeta del paquete
+            </Button>
+          </Box>
         </HStack>
       </Flex>
 
@@ -391,7 +402,7 @@ export default function ScriptImporter({ catalog, existingItems, onAdd, packageC
             <Button variant="ghost" colorScheme="gray" size="sm" onClick={() => setResults(null)}>
               Descartar
             </Button>
-            <Button size="sm" onClick={add} isDisabled={selected.length === 0}>
+            <Button size="sm" onClick={add} isDisabled={selected.length === 0} data-guia="paquete.agregar-detectados">
               Agregar {pluralize(selected.length, "artefacto")} al paquete
             </Button>
           </HStack>

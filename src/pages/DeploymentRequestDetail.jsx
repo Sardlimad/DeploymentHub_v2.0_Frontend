@@ -69,6 +69,7 @@ import ConfirmDialog from "../components/common/ConfirmDialog";
 import { ArtifactTypeLabel, ChangeTypeBadge, CustomBadge, ExecutionBadge, RequestStatusBadge, TargetStatusBadge } from "../components/common/StatusBadge";
 import { EmptyBlock, ErrorBlock, LoadingRows } from "../components/common/DataState";
 import ReportResultModal from "../components/deployments/ReportResultModal";
+import { confirmarKrud } from "../integraciones/krud/eventos";
 import InstallationPicker from "../components/deployments/InstallationPicker";
 import { AuthContext } from "../context/AuthContext";
 import {
@@ -268,7 +269,10 @@ function DetailInner() {
 
   const reportStatus = async (body) => {
     const ok = await run(() => changeTargetStatus(id, action.target.id, body));
-    if (ok) toast({ title: `${action.target.clientName}: ${TargetStatus[body.status]?.label}`, status: "success" });
+    if (ok) {
+      toast({ title: `${action.target.clientName}: ${TargetStatus[body.status]?.label}`, status: "success" });
+      confirmarKrud("resultado-registrado");
+    }
   };
 
   // Acción masiva: solo se aplica a los clientes elegidos que admiten ese cambio.
@@ -566,6 +570,7 @@ function DetailInner() {
                                         colorScheme={s === "Failed" ? "red" : s === "Applied" ? "green" : "gray"}
                                         leftIcon={ACTION_ICONS[s]}
                                         onClick={() => setAction({ target: t, toStatus: s })}
+                                        data-guia="detalle.cliente.resultado"
                                       >
                                         {targetButtonLabel(t.status, s)}
                                       </Button>
