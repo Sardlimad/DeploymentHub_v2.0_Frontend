@@ -16,6 +16,7 @@ import Profile from "./pages/Profile";
 import UsersInner from "./pages/Users";
 import Forbidden403 from "./pages/403_Forbidden";
 import Notfound from "./pages/NotFound";
+import Docs from "./pages/Docs";
 
 // Sin sesión → login. Con roles indicados, el usuario debe tener alguno (ADMIN siempre pasa).
 // Es solo navegación: la API vuelve a validar el rol en cada llamada.
@@ -52,6 +53,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/auth/password_recovery" element={<PasswordRecovery />} />
+            <Route path="/docs" element={<Docs />} />
 
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={page(<Dashboard />)} />
