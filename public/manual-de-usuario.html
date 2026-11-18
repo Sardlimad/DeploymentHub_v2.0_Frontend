@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Manual de usuario · DeploymentHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --b50:#e7f4f7; --b100:#c4e4eb; --b300:#6ebccd; --b400:#45a9bf; --b500:#1f8ea8; --b600:#17728a; --b700:#125a6d; --b800:#0d4351; --b900:#072b35;
+    --canvas:#f5f7f8; --surface:#fff; --line:#e2e8ea; --muted:#5b6b72; --ink:#14232a;
+    --yellow:#b7791f; --yellow-bg:#fefcbf; --cyan:#0987a0; --cyan-bg:#c4f1f9; --blue:#2b6cb0; --blue-bg:#bee3f8;
+    --green:#276749; --green-bg:#c6f6d5; --orange:#c05621; --orange-bg:#feebc8; --red:#c53030; --red-bg:#fed7d7;
+    --gray:#4a5568; --gray-bg:#e2e8f0; --purple:#6b46c1; --purple-bg:#e9d8fd;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin:0; background:var(--canvas); color:var(--ink); font:400 15px/1.6 "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing:antialiased; }
+  .mono { font-family:"JetBrains Mono", ui-monospace, Consolas, monospace; }
+  .wrap { max-width:920px; margin:0 auto; padding:0 24px; }
+
+  /* Portada */
+  .cover { background:var(--b900); color:#fff; position:relative; overflow:hidden; }
+  .cover::after { content:""; position:absolute; right:-90px; top:-90px; width:380px; height:380px; border-radius:60px; border:34px solid rgba(69,169,191,.16); transform:rotate(8deg); }
+  .cover::before { content:""; position:absolute; right:40px; top:80px; width:300px; height:300px; border-radius:48px; background:rgba(13,67,81,.9); transform:rotate(8deg); }
+  .cover .wrap { position:relative; z-index:1; padding-top:48px; padding-bottom:64px; }
+  .brand { display:flex; align-items:center; gap:12px; font-size:22px; letter-spacing:-.035em; }
+  .brand b { font-weight:800; } .brand span { font-weight:400; color:var(--b400); }
+  .cover h1 { font-size:clamp(34px,6vw,54px); line-height:1.05; letter-spacing:-.035em; font-weight:800; margin:72px 0 14px; max-width:560px; }
+  .cover p.lead { font-size:18px; color:var(--b100); max-width:520px; margin:0 0 32px; }
+  .meta { display:flex; gap:28px; flex-wrap:wrap; font-size:13px; color:var(--b300); }
+  .meta b { display:block; color:#fff; font-weight:600; }
+
+  nav.toc { background:var(--surface); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+  nav.toc .wrap { display:flex; gap:4px; overflow-x:auto; padding-top:0; padding-bottom:0; }
+  nav.toc a { color:var(--muted); text-decoration:none; font-weight:600; font-size:13px; padding:14px 12px; white-space:nowrap; border-bottom:2px solid transparent; }
+  nav.toc a:hover { color:var(--b600); border-color:var(--b500); }
+
+  section { padding:48px 0 8px; }
+  .eyebrow { font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--b500); display:flex; align-items:center; gap:10px; }
+  .eyebrow i { font-style:normal; width:26px; height:26px; border-radius:8px; background:var(--b800); color:#fff; display:grid; place-items:center; letter-spacing:0; font-size:13px; }
+  h2 { font-size:28px; letter-spacing:-.03em; line-height:1.15; margin:8px 0 12px; font-weight:800; color:var(--b900); }
+  h3 { font-size:17px; margin:28px 0 8px; font-weight:700; color:var(--b800); }
+  p { margin:0 0 12px; } .muted { color:var(--muted); }
+  b, strong { font-weight:700; }
+  .ui { background:var(--b50); color:var(--b700); border-radius:5px; padding:1px 6px; font-weight:600; font-size:.93em; white-space:nowrap; }
+
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:20px 22px; }
+  .grid { display:grid; gap:14px; } .g3 { grid-template-columns:repeat(3,1fr); } .g2 { grid-template-columns:repeat(2,1fr); }
+
+  /* Flujo */
+  .flow { display:grid; grid-template-columns:repeat(5,1fr); gap:0; margin:22px 0 6px; counter-reset:f; }
+  .flow div { position:relative; padding:16px 14px 16px 16px; background:var(--surface); border:1px solid var(--line); border-left:0; }
+  .flow div:first-child { border-left:1px solid var(--line); border-radius:12px 0 0 12px; }
+  .flow div:last-child { border-radius:0 12px 12px 0; }
+  .flow div::before { counter-increment:f; content:counter(f); display:block; font-weight:800; font-size:22px; color:var(--b400); line-height:1; margin-bottom:8px; }
+  .flow strong { display:block; font-size:14px; color:var(--b900); }
+  .flow small { color:var(--muted); font-size:12px; line-height:1.4; display:block; margin-top:2px; }
+  .flow .who { display:inline-block; margin-top:8px; font-size:11px; font-weight:700; border-radius:5px; padding:1px 7px; }
+
+  .badge { display:inline-block; font-size:12px; font-weight:700; border-radius:6px; padding:1px 8px; white-space:nowrap; }
+  .gray{background:var(--gray-bg);color:var(--gray)} .yellow{background:var(--yellow-bg);color:var(--yellow)} .cyan{background:var(--cyan-bg);color:var(--cyan)}
+  .blue{background:var(--blue-bg);color:var(--blue)} .green{background:var(--green-bg);color:var(--green)} .orange{background:var(--orange-bg);color:var(--orange)}
+  .red{background:var(--red-bg);color:var(--red)} .purple{background:var(--purple-bg);color:var(--purple)}
+
+  .role h4 { margin:0 0 8px; font-size:15px; display:flex; align-items:center; gap:8px; }
+  .role ul { margin:0; padding-left:18px; font-size:13.5px; color:#2d3d44; } .role li { margin:3px 0; }
+  .role { border-top:4px solid var(--b500); } .role.dev { border-top-color:#3182ce; } .role.inf { border-top-color:#dd6b20; } .role.adm { border-top-color:#805ad5; }
+
+  /* Pasos */
+  ol.steps { list-style:none; margin:14px 0; padding:0; counter-reset:s; }
+  ol.steps li { counter-increment:s; position:relative; padding:0 0 14px 46px; }
+  ol.steps li::before { content:counter(s); position:absolute; left:0; top:0; width:30px; height:30px; border-radius:9px; background:var(--b800); color:#fff; font-weight:800; display:grid; place-items:center; font-size:14px; }
+  ol.steps li::after { content:""; position:absolute; left:14px; top:34px; bottom:4px; width:2px; background:var(--b100); }
+  ol.steps li:last-child::after { display:none; }
+  .role-tag { font-size:12px; font-weight:700; border-radius:6px; padding:2px 9px; }
+  .step-head { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:30px; }
+  .step-head h3 { margin:0; }
+
+  .stepper { display:flex; gap:0; margin:12px 0 4px; }
+  .stepper span { flex:1; background:var(--b50); border:1px solid var(--b100); padding:8px 12px; font-size:13px; font-weight:700; color:var(--b700); }
+  .stepper span:first-child { border-radius:8px 0 0 8px; } .stepper span:last-child { border-radius:0 8px 8px 0; }
+  .stepper small { display:block; font-weight:500; color:var(--muted); font-size:11.5px; }
+
+  .note { border-left:4px solid var(--b500); background:var(--b50); border-radius:0 10px 10px 0; padding:12px 16px; margin:16px 0; font-size:14px; }
+  .note.warn { border-color:#dd6b20; background:#fffaf0; } .note.warn b:first-child { color:var(--orange); }
+  .note b:first-child { color:var(--b700); }
+
+  table { width:100%; border-collapse:collapse; background:var(--surface); border:1px solid var(--line); border-radius:12px; overflow:hidden; font-size:14px; }
+  th { text-align:left; font-size:12px; color:var(--muted); letter-spacing:.02em; padding:10px 14px; background:#f0f3f4; }
+  td { padding:9px 14px; border-top:1px solid var(--line); vertical-align:top; }
+
+  /* Símbolo de desfase */
+  .paralaje { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; text-align:center; }
+  .paralaje svg { width:64px; height:64px; display:block; margin:0 auto 8px; }
+  .paralaje small { color:var(--muted); display:block; font-size:12.5px; line-height:1.4; }
+
+  details { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:12px 16px; margin:8px 0; }
+  summary { cursor:pointer; font-weight:700; color:var(--b800); }
+  details p { margin:8px 0 0; font-size:14px; }
+
+  footer { margin-top:56px; background:var(--b900); color:var(--b300); font-size:13px; }
+  footer .wrap { padding-top:24px; padding-bottom:24px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:center; }
+  footer b { color:#fff; font-weight:800; } footer span.h { font-weight:400; color:var(--b400); }
+
+  @media (max-width:720px){ .g3,.g2,.paralaje{grid-template-columns:1fr} .flow{grid-template-columns:1fr} .flow div,.flow div:first-child,.flow div:last-child{border:1px solid var(--line);border-radius:0;margin-bottom:-1px} .stepper{flex-direction:column} .stepper span,.stepper span:first-child,.stepper span:last-child{border-radius:0} .cover::before,.cover::after{display:none} }
+  @media print {
+    @page { size:A4; margin:14mm 12mm; }
+    body { background:#fff; font-size:12.5px; } nav.toc { display:none; }
+    * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .cover { break-after:page; } .cover .wrap { padding-top:40px; padding-bottom:80px; min-height:60vh; }
+    section { break-inside:auto; padding-top:24px; } .card, .note, table, details, .flow, ol.steps li { break-inside:avoid; }
+    details { display:block; } details > *:not(summary) { display:block !important; }
+    footer { break-inside:avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header class="cover">
+  <div class="wrap">
+    <div class="brand">
+      <svg width="34" height="34" viewBox="0 0 104 104" aria-hidden="true">
+        <defs><clipPath id="lc"><rect x="0" y="26" width="78" height="78" rx="16"/></clipPath></defs>
+        <rect x="31" y="5" width="68" height="68" rx="11" fill="none" stroke="#1f8ea8" stroke-width="10"/>
+        <rect x="0" y="26" width="78" height="78" rx="16" fill="#e7f4f7"/>
+        <rect x="26" y="0" width="78" height="78" rx="16" fill="#45a9bf" clip-path="url(#lc)"/>
+      </svg>
+      <div><b>Deployment</b><span>Hub</span></div>
+    </div>
+    <h1>Manual de usuario</h1>
+    <p class="lead">Cómo llevar una actualización desde el paquete hasta cada cliente, y saber en todo momento qué versión tiene cada uno.</p>
+    <div class="meta">
+      <div><b>Versión</b>2.0</div>
+      <div><b>Audiencia</b>Desarrollo · Infraestructura · Administración</div>
+      <div><b>Lectura</b>≈ 8 minutos</div>
+    </div>
+  </div>
+</header>
+
+<nav class="toc"><div class="wrap">
+  <a href="#vision">Visión general</a><a href="#roles">Roles</a><a href="#paquete">1 · Paquete</a><a href="#solicitud">2 · Solicitud</a><a href="#aplicar">3 · Aplicar</a><a href="#seguimiento">4 · Seguimiento</a><a href="#estados">Estados</a><a href="#faq">Dudas</a>
+</div></nav>
+
+<main class="wrap">
+
+<section id="vision">
+  <div class="eyebrow"><i>◆</i> Visión general</div>
+  <h2>Un solo recorrido, de principio a fin</h2>
+  <p>DeploymentHub centraliza las actualizaciones de los productos que se instalan en cada cliente. Una <b>solicitud de despliegue</b> envía un <b>paquete</b> (el conjunto ordenado de artefactos: scripts SQL, reportes, módulos y servicios) a uno o varios <b>clientes destino</b>. El sistema registra qué se aplicó, dónde y cuándo.</p>
+
+  <div class="flow">
+    <div><strong>Armar el paquete</strong><small>Scripts, reportes, módulos y servicios del producto.</small><span class="who blue">Desarrollo</span></div>
+    <div><strong>Crear la solicitud</strong><small>Producto, paquete y clientes destino.</small><span class="who blue">Desarrollo</span></div>
+    <div><strong>Enviar</strong><small>El paquete se bloquea; cada cliente queda Pendiente.</small><span class="who blue">Desarrollo</span></div>
+    <div><strong>Aprobar</strong><small>Se revisa lo enviado antes de aplicarlo.</small><span class="who orange">Infraestructura</span></div>
+    <div><strong>Aplicar y reportar</strong><small>Se registra el resultado en cada cliente.</small><span class="who orange">Infraestructura</span></div>
+  </div>
+
+  <h3>El símbolo del producto cuenta la historia</h3>
+  <p class="muted">Los dos cuadrados representan la versión instalada (sólido) y la última publicada (contorno). El desfase entre ambos es exactamente lo que DeploymentHub mide y ayuda a cerrar.</p>
+  <div class="paralaje card">
+    <div>
+      <svg viewBox="0 0 104 104"><defs><clipPath id="a1"><rect x="0" y="26" width="78" height="78" rx="16"/></clipPath></defs><rect x="31" y="5" width="68" height="68" rx="11" fill="none" stroke="#1f8ea8" stroke-width="10"/><rect x="0" y="26" width="78" height="78" rx="16" fill="#0d4351"/><rect x="26" y="0" width="78" height="78" rx="16" fill="#45a9bf" clip-path="url(#a1)"/></svg>
+      <b>Desactualizado</b><small>Hay una versión publicada que el cliente aún no tiene.</small>
+    </div>
+    <div>
+      <svg viewBox="0 0 104 104"><defs><clipPath id="a2"><rect x="13" y="13" width="78" height="78" rx="16"/></clipPath></defs><rect x="31" y="5" width="68" height="68" rx="11" fill="none" stroke="#1f8ea8" stroke-width="10"/><rect x="13" y="13" width="78" height="78" rx="16" fill="#0d4351"/><rect x="26" y="0" width="78" height="78" rx="16" fill="#45a9bf" clip-path="url(#a2)"/></svg>
+      <b>Desplegando</b><small>La actualización está en curso en el cliente.</small>
+    </div>
+    <div>
+      <svg viewBox="0 0 104 104"><rect x="26" y="0" width="78" height="78" rx="16" fill="#45a9bf"/><rect x="31" y="5" width="68" height="68" rx="11" fill="none" stroke="#1f8ea8" stroke-width="10"/></svg>
+      <b>Al día</b><small>Instalado y publicado coinciden.</small>
+    </div>
+  </div>
+</section>
+
+<section id="roles">
+  <div class="eyebrow"><i>◆</i> Roles</div>
+  <h2>Quién hace qué</h2>
+  <p>Lo que ves en el menú depende de tu rol. El Administrador puede hacer todo lo de los otros dos.</p>
+  <div class="grid g3">
+    <div class="card role dev"><h4><span class="badge blue">Desarrollador</span></h4><ul><li>Crear paquetes y detectar sus scripts y reportes</li><li>Crear solicitudes y enviarlas</li><li>Ver solicitudes y estado de clientes</li></ul></div>
+    <div class="card role inf"><h4><span class="badge orange">Infraestructura</span></h4><ul><li>Aprobar solicitudes enviadas</li><li>Registrar el resultado por cliente</li><li>Ver solicitudes, paquetes y estado</li></ul></div>
+    <div class="card role adm"><h4><span class="badge purple">Administrador</span></h4><ul><li>Todo lo anterior</li><li>Productos, clientes, ambientes y artefactos</li><li>Usuarios y roles</li></ul></div>
+  </div>
+</section>
+
+<section id="paquete">
+  <div class="eyebrow"><i>1</i> Paso 1</div>
+  <h2>Crear un paquete</h2>
+  <div class="step-head"><span class="role-tag blue">Desarrollador</span><span class="muted">Catálogo › Paquetes</span></div>
+  <ol class="steps">
+    <li>Pulsa <span class="ui">Nuevo paquete</span>, elige el producto y escribe una descripción clara (por ejemplo, la versión o el motivo).</li>
+    <li>Pulsa <span class="ui">Elegir comprimido .zip</span> y selecciona el mismo .zip que subiste a OneDrive. Se lee en tu equipo: <b>no se sube a ningún lado</b>.</li>
+    <li>El sistema detecta los <span class="mono">.sql</span> de la carpeta <span class="mono">SCRIPTS</span> (todos los objetos que definen) y los reportes <span class="mono">.rdl</span>. Lo que no existe en el catálogo entra como <span class="badge green">Nuevo</span>.</li>
+    <li>Revisa lo detectado, pulsa <span class="ui">Agregar al paquete</span> y después <span class="ui">Crear paquete</span>. Los módulos y servicios se agregan a mano.</li>
+  </ol>
+  <div class="note"><b>Actualización personalizada.</b> Marca esta opción para un paquete dirigido a un solo cliente. Solo puede enviarse a ese cliente, no cambia su versión vigente y no marca a los demás como desactualizados.</div>
+</section>
+
+<section id="solicitud">
+  <div class="eyebrow"><i>2</i> Paso 2</div>
+  <h2>Crear y enviar la solicitud</h2>
+  <div class="step-head"><span class="role-tag blue">Desarrollador</span><span class="muted">Operación › Nueva solicitud</span></div>
+  <div class="stepper"><span>1 · Producto<small>Qué se actualiza</small></span><span>2 · Paquete<small>Qué artefactos van</small></span><span>3 · Clientes<small>A quién se envía</small></span><span>4 · Revisión<small>Confirmar y enviar</small></span></div>
+  <ol class="steps">
+    <li>Elige el <b>producto</b>. Después, usa un paquete existente o arma uno nuevo en el mismo asistente.</li>
+    <li>Elige los <b>clientes destino</b>. Solo aparecen instalaciones activas que tienen contratado ese producto.</li>
+    <li>En <b>Revisión</b> pulsa <span class="ui">Crear y enviar</span>, o <span class="ui">Guardar borrador</span> si prefieres completarla después.</li>
+  </ol>
+  <div class="note warn"><b>Al enviar no hay vuelta atrás.</b> El paquete se bloquea para que lo desplegado no cambie, y cada cliente pasa a <span class="badge yellow">Pendiente</span>. Revisa bien antes de confirmar: un borrador sí se puede editar, una solicitud enviada no.</div>
+  <p class="muted">Atajo: en <span class="ui">Estado de clientes</span> activa <span class="ui">Solo desactualizados</span> y pulsa <span class="ui">Actualizar desactualizados</span> para abrir una solicitud con esos clientes ya elegidos.</p>
+</section>
+
+<section id="aplicar">
+  <div class="eyebrow"><i>3</i> Paso 3</div>
+  <h2>Aprobar, aplicar y reportar</h2>
+  <div class="step-head"><span class="role-tag orange">Infraestructura</span><span class="muted">Operación › Solicitudes</span></div>
+  <ol class="steps">
+    <li>Abre la solicitud pendiente y pulsa <span class="ui">Aprobar</span> una vez revisado su contenido.</li>
+    <li>En la pestaña <b>Clientes</b>, cada fila muestra los botones de su siguiente estado. Usa <span class="ui">Iniciar</span> al comenzar la aplicación en ese cliente.</li>
+    <li>Al terminar, marca <span class="ui">Aplicado</span> o <span class="ui">Falló</span>. Puedes indicar el resultado de cada artefacto y dejar un comentario.</li>
+    <li>El resto de acciones (programar, omitir, revertir, reintentar) están en el menú <span class="ui">Más</span>. Para varios clientes a la vez, márcalos y usa las acciones masivas.</li>
+  </ol>
+  <div class="grid g2">
+    <div class="note warn"><b>Si falla, el motivo es obligatorio.</b> Describe el error en el comentario; queda en el historial del cliente.</div>
+    <div class="note"><b>El estado general se calcula solo.</b> No se marca a mano: sale de los estados de cada cliente.</div>
+  </div>
+</section>
+
+<section id="seguimiento">
+  <div class="eyebrow"><i>4</i> Paso 4</div>
+  <h2>Seguimiento</h2>
+  <div class="grid g3">
+    <div class="card"><b>Panel</b><p class="muted" style="margin:6px 0 0;font-size:13.5px">Por aplicar, en curso, con clientes fallidos y desactualizados. Incluye una actividad en vivo.</p></div>
+    <div class="card"><b>Estado de clientes</b><p class="muted" style="margin:6px 0 0;font-size:13.5px">Cada instalación (cliente, producto, ambiente) con su paquete aplicado y si está al día.</p></div>
+    <div class="card"><b>Tiempo real y correo</b><p class="muted" style="margin:6px 0 0;font-size:13.5px">Los cambios aparecen sin recargar y los eventos relevantes se notifican por correo.</p></div>
+  </div>
+</section>
+
+<section id="estados">
+  <div class="eyebrow"><i>◆</i> Referencia</div>
+  <h2>Estados</h2>
+  <div class="grid g2">
+    <table>
+      <tr><th colspan="2">Solicitud</th></tr>
+      <tr><td><span class="badge gray">Borrador</span></td><td>Editable; aún no se envía.</td></tr>
+      <tr><td><span class="badge yellow">Pendiente</span></td><td>Enviada, sin empezar.</td></tr>
+      <tr><td><span class="badge cyan">Aprobada</span></td><td>Revisada por Infraestructura.</td></tr>
+      <tr><td><span class="badge blue">En curso</span></td><td>Algún cliente ya arrancó o terminó.</td></tr>
+      <tr><td><span class="badge green">Completada</span></td><td>Todos los clientes aplicados.</td></tr>
+      <tr><td><span class="badge orange">Parcial</span></td><td>Terminó con aplicados y fallidos.</td></tr>
+      <tr><td><span class="badge red">Fallida</span></td><td>Terminó sin ningún aplicado.</td></tr>
+      <tr><td><span class="badge gray">Cancelada</span></td><td>Anulada antes de desplegarse.</td></tr>
+    </table>
+    <table>
+      <tr><th colspan="2">Cliente destino</th></tr>
+      <tr><td><span class="badge yellow">Pendiente</span></td><td>A la espera de aplicarse.</td></tr>
+      <tr><td><span class="badge cyan">Programado</span></td><td>Con fecha de aplicación.</td></tr>
+      <tr><td><span class="badge blue">En curso</span></td><td>Aplicándose ahora.</td></tr>
+      <tr><td><span class="badge green">Aplicado</span></td><td>Actualización completada.</td></tr>
+      <tr><td><span class="badge red">Fallido</span></td><td>Con motivo registrado.</td></tr>
+      <tr><td><span class="badge purple">Revertido</span></td><td>Se restituye la versión previa.</td></tr>
+      <tr><td><span class="badge gray">Omitido</span></td><td>No cuenta para el resultado.</td></tr>
+      <tr><td><span class="badge gray">Cancelado</span></td><td>No cuenta para el resultado.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="eyebrow"><i>?</i> Dudas frecuentes</div>
+  <h2>Antes de pedir ayuda</h2>
+  <details><summary>No veo «Nueva solicitud» en el menú</summary><p>Esa opción es para los roles Desarrollador y Administrador. Si necesitas el permiso, pídelo a un Administrador en Administración › Usuarios.</p></details>
+  <details><summary>Un cliente no aparece al elegir destinos</summary><p>Debe tener contratado el producto del paquete, con la instalación activa, y no estar ya en la solicitud. Si el paquete es personalizado, solo aparece el cliente al que va dirigido. Un Administrador asigna productos en Catálogo › Clientes.</p></details>
+  <details><summary>No puedo cancelar una solicitud</summary><p>No se puede si ya terminó, ni mientras algún cliente tenga el despliegue <b>En curso</b>. Espera su resultado y vuelve a intentarlo.</p></details>
+  <details><summary>No me deja marcar «Aplicado»</summary><p>Si reportaste algún artefacto como fallido, el cliente no puede quedar aplicado. Corrige el resultado del artefacto o marca el cliente como Fallido.</p></details>
+  <details><summary>Olvidé mi contraseña</summary><p>En el inicio de sesión usa <b>¿La olvidaste?</b>. Para cambiarla estando dentro: menú de usuario › Mi perfil. Mínimo 8 caracteres, con letras y números.</p></details>
+  <p class="muted" style="margin-top:16px">¿Prefieres una guía en pantalla? El asistente <b>KRUD</b> (esquina de la aplicación) responde preguntas y te acompaña paso a paso.</p>
+</section>
+
+</main>
+
+<footer><div class="wrap"><div><b>Deployment</b><span class="h">Hub</span> · Manual de usuario v2.0</div><div>Instalado · Publicado · Al día</div></div></footer>
+
+</body>
+</html>
